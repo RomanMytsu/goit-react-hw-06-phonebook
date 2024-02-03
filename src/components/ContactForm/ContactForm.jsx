@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-
+import { addContact } from '../../redux/contactsSlice';
+import { getContacts } from '../../redux/selectors';
 
 import { nanoid } from 'nanoid';
 import {
@@ -9,8 +10,6 @@ import {
   FormInput,
   FormLabel,
 } from './ContactForm.styled';
-import { getContacts } from 'redux/selectors';
-import { addContact } from 'redux/contactsSlice';
 
 export const ContactForm = () => {
   const [name, setName] = useState('');
@@ -18,12 +17,19 @@ export const ContactForm = () => {
   const contacts = useSelector(getContacts);
   const dispatch = useDispatch();
 
-  const handleNameChange = e => {
-    setName(e.target.value);
-  };
+  const handleChange = e => {
+    const { name, value } = e.target;
+    switch (name) {
+      case 'name':
+        setName(value);
+        break;
+      case 'number':
+        setNumber(value);
+        break;
 
-  const handleNumberChange = e => {
-    setNumber(e.target.value);
+      default:
+        return;
+    }
   };
 
   const handleSubmit = e => {
@@ -54,7 +60,7 @@ export const ContactForm = () => {
         title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
         required
         value={name}
-        onChange={handleNameChange}
+        onChange={handleChange}
       />
       <FormLabel htmlFor="numberInput">Number</FormLabel>
       <FormInput
@@ -65,7 +71,7 @@ export const ContactForm = () => {
         title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
         required
         value={number}
-        onChange={handleNumberChange}
+        onChange={handleChange}
       />
       <FormButton type="submit">Add contact</FormButton>
     </ContactFormContainer>
